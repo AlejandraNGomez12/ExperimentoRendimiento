@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  report_app:
+    build:
+      context: ./report_app
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: "report_db"
+      DB_NAME: "reports"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      USERS_PATH: http://reort_app:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - report_db
+    links:
+      - report_db
+    networks:
+      - report_net
+  report_db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=reports
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - report_net
+networks:
+  report_net:
+    driver: bridge
